@@ -1,18 +1,21 @@
 package org.penough.mp.generator.processor;
 
 import com.baomidou.mybatisplus.generator.AutoGenerator;
-import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
-import com.baomidou.mybatisplus.generator.config.PackageConfig;
-import com.baomidou.mybatisplus.generator.config.StrategyConfig;
-import com.baomidou.mybatisplus.generator.config.TemplateConfig;
+import com.baomidou.mybatisplus.generator.config.*;
+import com.baomidou.mybatisplus.generator.config.builder.GeneratorBuilder;
 import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.querys.MySqlQuery;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.keywords.MySqlKeyWordsHandler;
 import org.penough.mp.generator.config.*;
 import org.penough.mp.generator.constant.TableConstant;
-import org.penough.mp.generator.constant.TplConstant;
 
+/**
+ * 自动生成器处理器器
+ *
+ * @author Penough
+ * @date 2021-09-02
+ */
 public class AutoGeneratorProcessor {
 
 
@@ -22,9 +25,15 @@ public class AutoGeneratorProcessor {
      * @return
      */
     public AutoGenerator generatorCommonAutoGenerator(CommonConfig config){
+        // 链接数据源
         AutoGenerator generator = new AutoGenerator(generateDSConfig(config.getGlobalConfig()));
+        // 全局配置
+        generator.global(generateGlobalConfig(config.getGlobalConfig()));
+        // 包路径配置
         generator.packageInfo(generatePackageConfig(config.getPackageConfig()));
+        // 模板文件配置
         generator.template(generateTplConfig(config.getTplConfig()));
+        // 生成策略配置
         generator.strategy(generateStrategyConfig(config.getStratrgyConfig()));
         return generator;
     }
@@ -35,13 +44,35 @@ public class AutoGeneratorProcessor {
      * @return
      */
     private DataSourceConfig generateDSConfig(PeGlobalConfig config){
-        return new DataSourceConfig.Builder(config.getDatabaseUrl(), config.getDatabaseUrl(), config.getPwd())
+        return new DataSourceConfig.Builder(config.getDatabaseUrl(), config.getUserName(), config.getPwd())
                 .typeConvert(new MySqlTypeConvert())
                 .keyWordsHandler(new MySqlKeyWordsHandler())
-                .dbQuery(new MySqlQuery())
-                .schema("mybatis-plus")
+                .dbQuery(new MySqlQuery()) // 可以客制化覆盖表信息查询语句
+//                .schema("mybatis-plus") // 部分数据库适用，mysql和database等效，url带有了，不需要另外写
                 .build();
     }
+
+    /**
+     * 全局设置
+     * dateType，commentDate，
+     * @param config
+     * @return
+     */
+    private GlobalConfig generateGlobalConfig(PeGlobalConfig config){
+         GlobalConfig.Builder builder = GeneratorBuilder.globalConfigBuilder()
+                 .openDir(config.getOpenDir())
+                 .author(config.getAuthor())
+                 .outputDir(config.getProjectRootPath())
+                 .dateType(config.getDateType())
+                 .commentDate(config.getCommentDate());
+         fileOverride(builder, config.getFileOverride());
+         kotlin(builder, config.getKotlin());
+         swagger(builder, config.getSwagger());
+         return builder.build();
+    }
+    private GlobalConfig.Builder fileOverride(GlobalConfig.Builder builder, Boolean flag){ return flag?builder.fileOverride():builder;}
+    private GlobalConfig.Builder kotlin(GlobalConfig.Builder builder, Boolean flag){ return flag?builder.enableKotlin():builder;}
+    private GlobalConfig.Builder swagger(GlobalConfig.Builder builder, Boolean flag){ return flag?builder.enableSwagger():builder;}
 
     /**
      * 包配置

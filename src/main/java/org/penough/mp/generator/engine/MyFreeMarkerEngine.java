@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import org.jetbrains.annotations.NotNull;
 import org.penough.mp.generator.constant.TplConstant;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -84,16 +85,16 @@ public class MyFreeMarkerEngine extends FreemarkerTemplateEngine {
         String propertyName = field.getPropertyName();
 
         // 获取对象信息Map
-        Map<String, Object> objectMap = getObjectMap(getConfigBuilder(),tableInfo);
+        Map<String, Object> objectMap = getObjectMap(getConfigBuilder(), tableInfo);
         // 获取packageConfig的packageInfo
         Map<String, String> packageInfo = (Map) objectMap.get("package");
         // 获取实体包信息
         String entityPackage = packageInfo.get(ConstVal.ENTITY);
         // 定义枚举类包,把枚举类包放在实体包同级
-        String defEnumerationPackage = replaceLast(entityPackage, "entity","enumeration");
+        String defEnumerationPackage = replaceLast(entityPackage, "entity","enumerations");
         String enumName = analysisEnumClassName(tableInfo.getEntityName(), propertyName, comment);
-
-        writer(objectMap, TplConstant.ENUM, );
+        File outpuFile = new File(defEnumerationPackage + enumName);
+        writer(objectMap, TplConstant.ENUM, outpuFile);
     }
 
     /**
