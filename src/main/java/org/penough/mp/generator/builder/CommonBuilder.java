@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.penough.mp.generator.config.CommonConfig;
+import org.penough.mp.generator.config.PeGlobalConfig;
 import org.penough.mp.generator.engine.MyFreeMarkerEngine;
 import org.penough.mp.generator.processor.AutoGeneratorProcessor;
 
@@ -22,7 +23,7 @@ public class CommonBuilder {
         AutoGeneratorProcessor processor = new AutoGeneratorProcessor();
         AutoGenerator mpg = processor.generatorCommonAutoGenerator(config);
         // 使用FreeMarker引擎自动生成枚举类
-        mpg.execute(new MyFreeMarkerEngine());
+        mpg.execute(new MyFreeMarkerEngine(config.getGlobalConfig()));
     }
 
 

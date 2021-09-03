@@ -14,11 +14,17 @@ public class PeGlobalConfig {
     @Builder.Default
     String projectRootPath = System.getProperty("user.dir");
     @Builder.Default
+    String servicePrefix = "penough-";
+    @Builder.Default
+    String serviceName = "";
+    @Builder.Default
     String databaseUrl = "";
     @Builder.Default
     String userName = "root";
     @Builder.Default
     String pwd = "123456";
+    @Builder.Default
+    String tablePrefix = "";
     @Builder.Default
     String author = "author";
     @Builder.Default

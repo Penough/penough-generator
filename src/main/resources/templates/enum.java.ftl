@@ -1,7 +1,7 @@
-package ${enumCustom.package.importPackage};
+package ${enumInfo.package};
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.penough.boot.core.database.enumeration.BaseEnum;
+import org.penough.boot.database.enumeration.BaseEnum;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -27,31 +27,36 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "${enumCustom.enumName}", description = "${enumCustom.comment}-枚举")
+@ApiModel(value = "${enumInfo.enumClassName}", description = "${enumInfo.comment}-枚举")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum ${enumCustom.enumName} implements BaseEnum {
+public enum ${enumInfo.enumClassName} implements BaseEnum {
 
-    <#list enumCustom.list?keys as key>
+    <#list enumInfo.enumFieldsInfo?keys as key>
     /**
-     * ${key?upper_case}=<#list enumCustom.list[key] as des><#if enumCustom.firstTypeNumber=="false">"${des?trim}"<#else >${des?trim}</#if></#list>
+     * ${key?replace("$D$","")?upper_case}=<#list enumInfo.enumFieldsInfo[key] as atr><#if atr?index_of("$d$") gt -1>${atr?replace("$d$","")} <#else>"${atr}"</#if></#list>
      */
-    ${key?upper_case}(<#list enumCustom.list[key] as des><#if des_index == 0 && enumCustom.firstTypeNumber=="true">${des?trim}<#else>"${des?trim}"</#if><#if des_has_next>,</#if></#list>),
+    ${key?replace("$D$","")?upper_case}(<#list enumInfo.enumFieldsInfo[key] as atr><#if atr?index_of("$d$") gt -1>${atr?replace("$d$","")}<#else>"${atr}"</#if><#if atr_has_next>,</#if></#list>),
     </#list>
     ;
 
-<#list enumCustom.list?keys as key>
-<#list enumCustom.list[key] as des>
-    <#if des_index == 0>
+<#list enumInfo.enumFieldsInfo?keys as key>
+<#list enumInfo.enumFieldsInfo[key] as atr>
+    <#if atr_index == 0 && enumInfo.enumFieldsInfo[key]?size lt 2 || atr_index == 1>
     @ApiModelProperty(value = "描述")
+    private String desp;
+    <#elseif atr_index == 0 && enumInfo.enumFieldsInfo[key]?size gte 2>
+    @ApiModelProperty(value = "编码")
+    private <#if atr?index_of("$d$") gt -1>int code<#else>String code</#if>;
+    <#elseif atr_index gt 0 && enumInfo.enumFieldsInfo[key]?size gte 2>
+    @ApiModelProperty(value = "属性${atr_index}")
+    private <#if atr?index_of("$d$") gt -1>int<#else>String</#if> atr${atr_index};
     </#if>
-    private <#if des_index == 0 && enumCustom.firstTypeNumber=="true">int<#else >String</#if> <#if des_index == 0 && (enumCustom.list[key]?size == 1)>desc<#elseif des_index == 0 && (enumCustom.list[key]?size > 1)>val<#elseif des_index == 1 >desc<#else>other${enumCustom.list?size}</#if>;
-
 </#list>
 <#break>
 </#list>
 
-    public static ${enumCustom.enumName} match(String val, ${enumCustom.enumName} def) {
-        for (${enumCustom.enumName} enm : ${enumCustom.enumName}.values()) {
+    public static ${enumInfo.enumClassName} match(String val, ${enumInfo.enumClassName} def) {
+        for (${enumInfo.enumClassName} enm : ${enumInfo.enumClassName}.values()) {
             if (enm.name().equalsIgnoreCase(val)) {
                 return enm;
             }
@@ -59,7 +64,7 @@ public enum ${enumCustom.enumName} implements BaseEnum {
         return def;
     }
 
-    public static ${enumCustom.enumName} get(String val) {
+    public static ${enumInfo.enumClassName} get(String val) {
         return match(val, null);
     }
 
@@ -67,17 +72,22 @@ public enum ${enumCustom.enumName} implements BaseEnum {
         return this.name().equalsIgnoreCase(val);
     }
 
-    public boolean eq(${enumCustom.enumName} val) {
+    public boolean eq(${enumInfo.enumClassName} val) {
         if (val == null) {
             return false;
         }
         return eq(val.name());
     }
 
+
+<#list enumInfo.enumFieldsInfo?keys as key>
+    <#if enumInfo.enumFieldsInfo[key]?size lt 2>
     @Override
-    @ApiModelProperty(value = "编码", allowableValues = "<#list enumCustom.list?keys as key>${key?upper_case}<#if key_has_next>,</#if></#list>", example = "${enumCustom.list?keys[0]?upper_case}")
+    @ApiModelProperty(value = "编码", allowableValues = "<#list enumInfo.enumFieldsInfo?keys as key>${key?upper_case}<#if key_has_next>,</#if></#list>", example = "${enumInfo.enumFieldsInfo?keys[0]?upper_case}")
     public String getCode() {
         return this.name();
     }
-
+    </#if>
+<#break>
+</#list>
 }
