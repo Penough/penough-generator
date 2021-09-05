@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Getter;
 
 <#assign tableComment="${table.comment!}"/>
+<#assign intFlag="$D$"/>
 <#if table.comment!?length gt 0>
     <#if table.comment!?contains("\n") >
         <#assign tableComment="${table.comment!?substring(0,table.comment?index_of('\n'))?trim}"/>
@@ -33,9 +34,9 @@ public enum ${enumInfo.enumClassName} implements BaseEnum {
 
     <#list enumInfo.enumFieldsInfo?keys as key>
     /**
-     * ${key?replace("$D$","")?upper_case}=<#list enumInfo.enumFieldsInfo[key] as atr><#if atr?index_of("$d$") gt -1>${atr?replace("$d$","")} <#else>"${atr}"</#if></#list>
+     * ${key?replace(intFlag,"")?upper_case}=<#list enumInfo.enumFieldsInfo[key] as atr><#if atr?index_of(intFlag) gt -1>${atr?replace(intFlag,"")} <#else>"${atr}"</#if></#list>
      */
-    ${key?replace("$D$","")?upper_case}(<#list enumInfo.enumFieldsInfo[key] as atr><#if atr?index_of("$d$") gt -1>${atr?replace("$d$","")}<#else>"${atr}"</#if><#if atr_has_next>,</#if></#list>),
+    ${key?replace(intFlag,"")?upper_case}(<#list enumInfo.enumFieldsInfo[key] as atr><#if atr?index_of(intFlag) gt -1>${atr?replace(intFlag,"")}<#else>"${atr}"</#if><#if atr_has_next>,</#if></#list>),
     </#list>
     ;
 
@@ -46,14 +47,27 @@ public enum ${enumInfo.enumClassName} implements BaseEnum {
     private String desp;
     <#elseif atr_index == 0 && enumInfo.enumFieldsInfo[key]?size gte 2>
     @ApiModelProperty(value = "编码")
-    private <#if atr?index_of("$d$") gt -1>int code<#else>String code</#if>;
+    private <#if atr?index_of(intFlag) gt -1>int<#else>String</#if> code;
     <#elseif atr_index gt 0 && enumInfo.enumFieldsInfo[key]?size gte 2>
     @ApiModelProperty(value = "属性${atr_index}")
-    private <#if atr?index_of("$d$") gt -1>int<#else>String</#if> atr${atr_index};
+    private <#if atr?index_of(intFlag) gt -1>int<#else>String</#if> atr${atr_index};
     </#if>
 </#list>
 <#break>
 </#list>
+
+    public boolean eq(${enumInfo.enumClassName} val) {
+        if (val == null) {
+            return false;
+        }
+        return this.name().equalsIgnoreCase(val.name());
+    }
+
+<#list enumInfo.enumFieldsInfo?keys as key>
+    <#if enumInfo.enumFieldsInfo[key]?size lt 2>
+    public boolean eq(String val) {
+        return this.name().equalsIgnoreCase(val);
+    }
 
     public static ${enumInfo.enumClassName} match(String val, ${enumInfo.enumClassName} def) {
         for (${enumInfo.enumClassName} enm : ${enumInfo.enumClassName}.values()) {
@@ -68,25 +82,64 @@ public enum ${enumInfo.enumClassName} implements BaseEnum {
         return match(val, null);
     }
 
-    public boolean eq(String val) {
-        return this.name().equalsIgnoreCase(val);
-    }
-
-    public boolean eq(${enumInfo.enumClassName} val) {
-        if (val == null) {
-            return false;
-        }
-        return eq(val.name());
-    }
-
-
-<#list enumInfo.enumFieldsInfo?keys as key>
-    <#if enumInfo.enumFieldsInfo[key]?size lt 2>
     @Override
     @ApiModelProperty(value = "编码", allowableValues = "<#list enumInfo.enumFieldsInfo?keys as key>${key?upper_case}<#if key_has_next>,</#if></#list>", example = "${enumInfo.enumFieldsInfo?keys[0]?upper_case}")
     public String getCode() {
         return this.name();
     }
+    <#else>
+    <#list enumInfo.enumFieldsInfo?keys as key>
+    <#if enumInfo.enumFieldsInfo[key][0]?index_of(intFlag) gt -1>
+    public boolean eq(int code) {
+        return this.code == code;
+    }
+
+    public static ${enumInfo.enumClassName} match(int val, ${enumInfo.enumClassName} def) {
+        for (${enumInfo.enumClassName} enm : ${enumInfo.enumClassName}.values()) {
+            if (enm.eq(val)) {
+                return enm;
+            }
+        }
+        return def;
+    }
+
+    public static ${enumInfo.enumClassName} get(int val) {
+        return match(val, null);
+    }
+
+    @Override
+    @ApiModelProperty(value = "编码", allowableValues = "<#list enumInfo.enumFieldsInfo?keys as k>${enumInfo.enumFieldsInfo[k][0]?replace(intFlag,"")}<#if k_has_next>,</#if></#list>", example = "${enumInfo.enumFieldsInfo[key][0]?replace(intFlag,"")}")
+    public int getCode() {
+        return this.code;
+    }
+    <#else>
+    public boolean eq(String code) {
+        return this.code.equalsIgnoreCase(val);
+    }
+
+    public static ${enumInfo.enumClassName} match(String val, ${enumInfo.enumClassName} def) {
+        for (${enumInfo.enumClassName} enm : ${enumInfo.enumClassName}.values()) {
+            if (enm.eq(val)) {
+                return enm;
+            }
+        }
+        return def;
+    }
+
+    public static ${enumInfo.enumClassName} get(String val) {
+        return match(val, null);
+    }
+
+    @Override
+    @ApiModelProperty(value = "编码", allowableValues = "<#list enumInfo.enumFieldsInfo?keys as k>${enumInfo.enumFieldsInfo[k][0]?replace(intFlag,"")}<#if k_has_next>,</#if></#list>", example = "${enumInfo.enumFieldsInfo[key][0]}")
+    public String getCode() {
+        return this.code;
+    }
+    </#if>
+    <#break>
+    </#list>
+
+
     </#if>
 <#break>
 </#list>

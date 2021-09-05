@@ -50,7 +50,7 @@ public class MyFreeMarkerEngine extends FreemarkerTemplateEngine {
      * 匹配 xx:xx; 形式的注释
      */
     public final static String REG_EX_KEY = "([A-Za-z1-9_-]+):(.*?)?;";
-    public final static String INT_FLAG = "$d$";
+    public final static String INT_FLAG = "$D$";
     public final static String ENUM_INFO_FIELD_REG = "([A-Za-z]+[1-9_-]*)?\\[(.*?)\\]";
     private final static String JAVA_SUFFIX = ".java";
 
