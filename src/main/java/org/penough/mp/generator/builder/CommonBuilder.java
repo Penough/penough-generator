@@ -22,7 +22,7 @@ public class CommonBuilder {
         AutoGeneratorProcessor processor = new AutoGeneratorProcessor();
         AutoGenerator mpg = processor.generatorCommonAutoGenerator(config);
         // 使用FreeMarker引擎自动生成枚举类
-        mpg.execute(new MyFreeMarkerEngine(config.getGlobalConfig()));
+        mpg.execute(new MyFreeMarkerEngine(config));
     }
 
 

@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.keywords.MySqlKeyWordsHandler;
 import org.penough.mp.generator.config.*;
 import org.penough.mp.generator.constant.TableConstant;
+import org.penough.mp.generator.engine.MyFreeMarkerEngine;
 
 /**
  * 自动生成器处理器器
@@ -47,7 +48,7 @@ public class AutoGeneratorProcessor {
         return new DataSourceConfig.Builder(config.getDatabaseUrl(), config.getUserName(), config.getPwd())
                 .typeConvert(new MySqlTypeConvert())
                 .keyWordsHandler(new MySqlKeyWordsHandler())
-                .dbQuery(new MySqlQuery()) // 可以客制化覆盖表信息查询语句
+                .dbQuery(new MySqlQueryExt()) // 可以客制化覆盖表信息查询语句
 //                .schema("mybatis-plus") // 部分数据库适用，mysql和database等效，url带有了，不需要另外写
                 .build();
     }
@@ -122,7 +123,8 @@ public class AutoGeneratorProcessor {
                     .logicDeletePropertyName(TableConstant.LOGICAL_DELETE_PROPERTY)
                     .naming(NamingStrategy.underline_to_camel)// 数据库表映射到实体的命名策略
                     .columnNaming(NamingStrategy.underline_to_camel)// 字段到实体属性命名策略
-                    .addIgnoreColumns(TableConstant.IGNORE_COLUMNS)
+//                    .addIgnoreColumns(TableConstant.IGNORE_COLUMNS)
+                    .addTableFills(config.getTableFields())
                 .controllerBuilder()
                     .superClass(config.getSuperController())
                     .enableRestStyle()

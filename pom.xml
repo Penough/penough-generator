@@ -9,8 +9,8 @@
     <version>0.0.1</version>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
         <mp.version>3.5.0</mp.version>
         <hutool.version>5.7.3</hutool.version>
         <lombok.version>1.18.20</lombok.version>
@@ -18,6 +18,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.penough.boot</groupId>
+            <artifactId>penough-common</artifactId>
+            <version>0.0.1</version>
+        </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>

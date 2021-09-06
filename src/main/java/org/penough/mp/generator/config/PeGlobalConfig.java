@@ -24,8 +24,6 @@ public class PeGlobalConfig {
     @Builder.Default
     String pwd = "123456";
     @Builder.Default
-    String tablePrefix = "";
-    @Builder.Default
     String author = "author";
     @Builder.Default
     String commentDate = "yyyy-MM-dd";
@@ -38,7 +36,7 @@ public class PeGlobalConfig {
     @Builder.Default
     Boolean openDir = true;
     @Builder.Default
-    Boolean swagger = false;
+    Boolean swagger = true;
 
     public PeGlobalConfig(String databaseUrl, String userName, String pwd) {
         this();

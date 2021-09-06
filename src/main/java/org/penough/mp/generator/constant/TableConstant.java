@@ -5,4 +5,5 @@ public class TableConstant {
     public static final String VERSION_COLUMN = "version";
     public static final String LOGICAL_DELETE_COLUMN = "is_delete";
     public static final String LOGICAL_DELETE_PROPERTY = "isDelete";
+    public static final String COMMENT = "comment";
 }

@@ -1,5 +1,8 @@
 package org.penough.mp.generator.config;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.generator.IFill;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -26,6 +29,7 @@ public class PeStrategyConfig {
     NamingStrategy namingStrategy = NamingStrategy.underline_to_camel;
     NamingStrategy columnNaming = NamingStrategy.underline_to_camel;
     String[] ignoreColumns = TableConstant.IGNORE_COLUMNS;
+    IFill[] tableFields = {};
 
     /**
      * controller部分配置

@@ -8,7 +8,9 @@ import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.penough.mp.generator.config.PeGlobalConfig;
+import org.penough.mp.generator.config.PeStrategyConfig;
 import org.penough.mp.generator.constant.CommonConstant;
+import org.penough.mp.generator.constant.TableConstant;
 import org.penough.mp.generator.constant.TplConstant;
 
 import java.io.File;
@@ -37,7 +39,7 @@ public class EnumFieldUtil {
      *
      * @throws Exception
      */
-    public static void generateEnum(TableInfo tableInfo, TableField field, PeGlobalConfig globalConfig, FreemarkerTemplateEngine engine) throws Exception {
+    public static void generateEnum(TableInfo tableInfo, TableField field, PeGlobalConfig globalConfig, PeStrategyConfig strategyConfig, FreemarkerTemplateEngine engine) throws Exception {
         var comment = field.getComment();
         var matcher = matchEnumComment(comment);
         if (matcher == null) return;
@@ -50,30 +52,30 @@ public class EnumFieldUtil {
         // 获取对象信息Map
         var objectMap = engine.getObjectMap(engine.getConfigBuilder(), tableInfo);
         // 获取packageConfig的packageInfo
-        Map<String, String> packageInfo = (Map) objectMap.get("package");
+        Map<String, String> packageInfo = (Map) objectMap.get(CommonConstant.PACKAGE);
         // 获取实体包信息
         var entityPackage = packageInfo.get(ConstVal.ENTITY);
         // 定义枚举类包,把枚举类包放在实体包同级
         var defEnumerationPackage = replaceLast(entityPackage, CommonConstant.ENTITY, CommonConstant.ENUMERATIONS);
-
+        tableInfo.getImportPackages().add(defEnumerationPackage);
 
         // 确定存在枚举实体类名
         var enumNameOpt = Optional.ofNullable(matcher.group(1));
         var enumClassName = enumNameOpt.orElseGet(() -> useEntityEnumName(tableInfo.getEntityName(), propertyName))
-                .replace(upperFirstChar(globalConfig.getTablePrefix()), "");
+                .replace(upperFirstChar(strategyConfig.getTablePrefix()), "");
         // 处理customMap
         var EnumsFieldInfo = resolveEnumsFieldInfo(propertyName, matcher.group(2));
         var enumInfo = new HashMap<>();
-        enumInfo.put("enumFieldsInfo", EnumsFieldInfo);
-        enumInfo.put("enumClassName", enumClassName);
-        enumInfo.put("comment", comment);
-        enumInfo.put("package", defEnumerationPackage);
+        enumInfo.put(CommonConstant.ENUM_FIELDS_INFO, EnumsFieldInfo);
+        enumInfo.put(CommonConstant.ENUM_CLASS_NAME, enumClassName);
+        enumInfo.put(TableConstant.COMMENT, comment);
+        enumInfo.put(CommonConstant.PACKAGE, defEnumerationPackage);
 
         var customMap = new HashMap(field.getCustomMap());
-        customMap.put("enumInfo", enumInfo);
-        customMap.put("isEnum", true); // 标记字段为枚举
+        customMap.put(CommonConstant.ENUM_INFO, enumInfo);
+        customMap.put(CommonConstant.IS_ENUM, true); // 标记字段为枚举
         field.setCustomMap(customMap); // 设置该字段说明以及枚举类，在后续生成中方便对该字段进行处理
-        objectMap.put("enumInfo", enumInfo); // 将enum信息放入objectMap，使Freemarker的writer可以读取到enumInfo信息
+        objectMap.put(CommonConstant.ENUM_INFO, enumInfo); // 将enum信息放入objectMap，使Freemarker的writer可以读取到enumInfo信息
         // 这里把defEnumerationPackage改成文件分割地址，指定实际输出路径
         var clazPath = getRootBasePath(globalConfig) + defEnumerationPackage.replace(StringPool.DOT, File.separator) + File.separator;
         File outputFile = new File(clazPath + enumClassName + JAVA_SUFFIX);
@@ -82,8 +84,6 @@ public class EnumFieldUtil {
         log.info("正在向文件：{}，输出枚举类...", outputFile.getAbsolutePath());
         engine.writer(objectMap, TplConstant.ENUM, outputFile);
     }
-
-
 
     /**
      * 解析枚举类属性信息
@@ -150,7 +150,7 @@ public class EnumFieldUtil {
      * 匹配Enum注释信息
      * @return
      */
-    private static Matcher matchEnumComment(String comment) {
+    public static Matcher matchEnumComment(String comment) {
         Pattern pattern = Pattern.compile(ENUM_INFO_REG);
         Matcher matcher = pattern.matcher(comment);
         return matcher.find()?matcher : null;

@@ -9,15 +9,15 @@ public class Test {
 //    private static String DB_PWD = "root";
     private static String SERVICE_NAME = "user";
     private static String AUTHOR = "penough";
-    private static String TABLE_REPFIX = "Pblog";
+    private static String TABLE_REPFIX = "pblog";
     public static void main(String[] args) {
         CommonConfig config = new CommonConfig();
         config.getGlobalConfig()
                 .setDatabaseUrl(DATABASE)
                 .setPwd(DB_PWD)
                 .setServiceName(SERVICE_NAME)
-                .setAuthor(AUTHOR)
-                .setTablePrefix(TABLE_REPFIX);
+                .setAuthor(AUTHOR);
+        config.getStratrgyConfig().setTablePrefix(TABLE_REPFIX);
         CommonBuilder.buildFiles(config);
     }
 }
