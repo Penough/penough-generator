@@ -38,7 +38,7 @@ public class PeStrategyConfig {
     /**
      * mapper部分配置
      */
-    String superMapper = "com.penough.boot.mvc.mapper.SuperMapper";
+    String superMapper = "com.penough.boot.database.mapper.SuperMapper";
 
     /**
      * service部分配置

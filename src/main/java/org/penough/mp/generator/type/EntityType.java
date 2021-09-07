@@ -12,7 +12,7 @@ public enum EntityType {
     /**
      * 只有id
      */
-    SUPER_ENTITY("org.penough.boot.core.database.entity.SuperEntity", new String[]{"id", "create_time", "create_user","modify_time", "modify_user"}),
+    SUPER_ENTITY("org.penough.boot.database.entity.SuperEntity", new String[]{"id", "create_time", "create_user","modify_time", "modify_user"}),
 
     /**
      * 不继承任何实体
