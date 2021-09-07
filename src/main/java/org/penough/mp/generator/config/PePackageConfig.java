@@ -15,7 +15,7 @@ public class PePackageConfig {
     @Builder.Default
     String module = "";
     @Builder.Default
-    String entityPackage = "entity";
+    String entityPackage = "model"; // 模型包，包括dto，entity，enum
     @Builder.Default
     String servicePackage = "service";
     @Builder.Default

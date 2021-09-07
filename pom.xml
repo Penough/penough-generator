@@ -15,13 +15,14 @@
         <hutool.version>5.7.3</hutool.version>
         <lombok.version>1.18.20</lombok.version>
         <mysql.version>8.0.26</mysql.version>
+        <penough.boot.version>0.0.1</penough.boot.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.penough.boot</groupId>
             <artifactId>penough-common</artifactId>
-            <version>0.0.1</version>
+            <version>${penough.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>

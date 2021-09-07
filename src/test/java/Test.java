@@ -10,6 +10,8 @@ public class Test {
     private static String SERVICE_NAME = "user";
     private static String AUTHOR = "penough";
     private static String TABLE_REPFIX = "pblog";
+    private static String PARENT_PKG = "org.penough.pblog";
+    private static String MODULE_NAME = "user";
     public static void main(String[] args) {
         CommonConfig config = new CommonConfig();
         config.getGlobalConfig()
@@ -17,6 +19,9 @@ public class Test {
                 .setPwd(DB_PWD)
                 .setServiceName(SERVICE_NAME)
                 .setAuthor(AUTHOR);
+        config.getPackageConfig()
+                .setParentPackage(PARENT_PKG)
+                .setModule(MODULE_NAME);
         config.getStratrgyConfig().setTablePrefix(TABLE_REPFIX);
         CommonBuilder.buildFiles(config);
     }

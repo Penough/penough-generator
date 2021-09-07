@@ -32,7 +32,6 @@ public class EnumFieldUtil {
     public final static String INT_FLAG = "$D$";
     public final static String ENUM_INFO_FIELD_REG = "([A-Za-z]+[1-9_-]*)?\\[(.*?)\\]";
     private final static String ENUM_INFO_REG = "#([A-Za-z]+[1-9_-]*)?\\{(.*)\\}";
-    public static final String SRC_MAIN_JAVA = "src" + File.separator + "main" + File.separator + "java";
 
     /**
      * 生成枚举类型类
@@ -56,13 +55,14 @@ public class EnumFieldUtil {
         // 获取实体包信息
         var entityPackage = packageInfo.get(ConstVal.ENTITY);
         // 定义枚举类包,把枚举类包放在实体包同级
-        var defEnumerationPackage = replaceLast(entityPackage, CommonConstant.ENTITY, CommonConstant.ENUMERATIONS);
-        tableInfo.getImportPackages().add(defEnumerationPackage);
+        var defEnumerationPackage = entityPackage + StringPool.DOT + CommonConstant.ENUMERATION;
+
 
         // 确定存在枚举实体类名
         var enumNameOpt = Optional.ofNullable(matcher.group(1));
         var enumClassName = enumNameOpt.orElseGet(() -> useEntityEnumName(tableInfo.getEntityName(), propertyName))
                 .replace(upperFirstChar(strategyConfig.getTablePrefix()), "");
+        tableInfo.getImportPackages().add(defEnumerationPackage + StringPool.DOT + enumClassName);
         // 处理customMap
         var EnumsFieldInfo = resolveEnumsFieldInfo(propertyName, matcher.group(2));
         var enumInfo = new HashMap<>();
@@ -77,7 +77,7 @@ public class EnumFieldUtil {
         field.setCustomMap(customMap); // 设置该字段说明以及枚举类，在后续生成中方便对该字段进行处理
         objectMap.put(CommonConstant.ENUM_INFO, enumInfo); // 将enum信息放入objectMap，使Freemarker的writer可以读取到enumInfo信息
         // 这里把defEnumerationPackage改成文件分割地址，指定实际输出路径
-        var clazPath = getRootBasePath(globalConfig) + defEnumerationPackage.replace(StringPool.DOT, File.separator) + File.separator;
+        var clazPath = PathUtil.getRootBasePath(globalConfig) + defEnumerationPackage.replace(StringPool.DOT, File.separator) + File.separator;
         File outputFile = new File(clazPath + enumClassName + JAVA_SUFFIX);
         if(!outputFile.getParentFile().exists()) outputFile.getParentFile().mkdirs();
         if(!outputFile.exists()) outputFile.createNewFile();
@@ -129,21 +129,6 @@ public class EnumFieldUtil {
      */
     private static String useEntityEnumName(String entityName,String propertyName){
         return entityName + (Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1)) + "Enum";
-    }
-
-    /**
-     * 获取项目根路径，直到main/java
-     */
-    private static String getRootBasePath(PeGlobalConfig globalConfig){
-        var rootPath = globalConfig.getProjectRootPath();
-        if(!rootPath.endsWith(File.separator)) rootPath += File.separator;
-        var sb = new StringBuilder(rootPath);
-        sb.append(globalConfig.getServicePrefix()
-                + globalConfig.getServiceName()
-                + File.separator
-                + SRC_MAIN_JAVA
-                + File.separator);
-        return sb.toString();
     }
 
     /**

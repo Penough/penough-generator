@@ -1,9 +1,9 @@
-package ${cfg.SaveDTO};
+package ${dtoPkg};
 
 <#list table.importPackages as pkg>
 import ${pkg};
 </#list>
-<#if swagger2>
+<#if swagger>
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 </#if>
@@ -12,28 +12,12 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import com.deeya.medical.base.entity.SuperEntity;
-<#if entityLombokModel>
-import lombok.Data;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.ToString;
-import lombok.experimental.Accessors;
-</#if>
-<#list cfg.filedTypes as fieldType>
-    <#list table.fields as field>
-        <#if field.propertyName == fieldType.name && table.name==fieldType.table && field.propertyType=="String">
-import ${fieldType.packagePath};
-            <#break>
-        </#if>
-    </#list>
-</#list>
+import lombok.*;
 import java.io.Serializable;
 
 /**
  * <p>
- * 实体类
+ * 实体Update模型类
  * ${table.comment!?replace("\n","\n * ")}
  * </p>
  *
@@ -49,7 +33,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = false)
 @Builder
 </#if>
-<#if swagger2>
+<#if swagger>
 @ApiModel(value = "${entity}UpdateDTO", description = "${table.comment!?replace("\r\n"," ")?replace("\r"," ")?replace("\n"," ")}")
 </#if>
 public class ${entity}UpdateDTO implements Serializable {
@@ -65,8 +49,7 @@ public class ${entity}UpdateDTO implements Serializable {
 </#list>
 
 <#list table.fields as field>
-<#-- 如果有父类，排除公共字段 -->
-<#if (superEntityClass?? && cfg.superExtend?? && field.propertyName !="id") || (superEntityClass?? && field.propertyName !="id" && field.propertyName !="createTime" && field.propertyName != "updateTime" && field.propertyName !="createUser" && field.propertyName !="updateUser") || !superEntityClass??>
+<#if field.propertyName !="id" && field.propertyName !="createTime" && field.propertyName != "updateTime" && field.propertyName !="createUser" && field.propertyName !="updateUser">
     <#if field.keyFlag>
         <#assign keyPropertyName="${field.propertyName}"/>
     </#if>
@@ -79,28 +62,21 @@ public class ${entity}UpdateDTO implements Serializable {
             <#assign fieldComment="${field.comment!?substring(0,field.comment?index_of('\n'))?replace('\r\n','')?replace('\r','')?replace('\n','')?trim}"/>
         </#if>
     </#if>
-    <#if swagger2>
+    <#if swagger>
     @ApiModelProperty(value = "${fieldComment}")
     </#if>
     <#assign myPropertyType="${field.propertyType}"/>
-    <#assign isEnumType="1"/>
-    <#list cfg.filedTypes as fieldType>
-        <#if fieldType.name == field.propertyName && table.name==fieldType.table && field.propertyType=="String">
-            <#assign myPropertyType="${fieldType.type}"/>
-            <#assign isEnumType="2"/>
-        </#if>
-    </#list>
-    <#if field.customMap.dict??>
-        <#assign isEnumType="3"/>
-    </#if>
-    <#if field.customMap.Null == "NO" >
-        <#if (field.columnType!"") == "STRING" && isEnumType == "1">
+    <#assign isEnumType=field.customMap.isEnum!false/>
+    <#if field.customMap.Null == "NO">
+        <#if (field.columnType!"") == "STRING">
     @NotEmpty(message = "${fieldComment}不能为空")
         <#else>
     @NotNull(message = "${fieldComment}不能为空")
         </#if>
     </#if>
-    <#if (field.columnType!"") == "STRING" && isEnumType == "1">
+    <#if isEnumType>
+    @EnumValidation(${field.customMap.enumInfo.enumClassName}.class)
+    <#elseif (field.columnType!"") == "STRING">
         <#assign max = 255/>
         <#if field.type?starts_with("varchar") || field.type?starts_with("char")>
             <#if field.type?contains("(")>
@@ -126,32 +102,8 @@ public class ${entity}UpdateDTO implements Serializable {
     @Range(min = Short.MIN_VALUE, max = Short.MAX_VALUE, message = "${fieldComment}长度不能超过"+Short.MAX_VALUE)
         </#if>
     </#if>
-    <#if field.customMap.dict??>
-    @DictionaryType("${field.customMap.dict}")
-        <#assign myPropertyType="Dictionary"/>
-    </#if>
     <#assign myPropertyName="${field.propertyName}"/>
-<#-- 自动注入注解 -->
-    <#if field.customMap.annotation??>
-    ${field.customMap.annotation}
-        <#assign myPropertyType="${field.customMap.type}"/>
-        <#if field.propertyName?ends_with("Id")>
-            <#assign myPropertyName="${field.propertyName!?substring(0,field.propertyName?index_of('Id'))}"/>
-        </#if>
-    </#if>
     private ${myPropertyType} ${myPropertyName};
 </#if>
 </#list>
-<#if superEntityClass?? && superEntityClass=="TreeEntity">
-    @ApiModelProperty(value = "名称")
-    @NotEmpty(message = "名称不能为空")
-    @Length(max = 255, message = "名称长度不能超过255")
-    protected String label;
-
-    @ApiModelProperty(value = "父ID")
-    protected <#list table.commonFields as field><#if field.keyFlag>${field.propertyType}</#if></#list> parentId;
-
-    @ApiModelProperty(value = "排序号")
-    protected Integer sortValue;
-</#if>
 }

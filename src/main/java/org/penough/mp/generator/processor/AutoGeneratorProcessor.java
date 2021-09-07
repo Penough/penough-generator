@@ -4,12 +4,15 @@ import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.builder.GeneratorBuilder;
 import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
-import com.baomidou.mybatisplus.generator.config.querys.MySqlQuery;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
+import com.baomidou.mybatisplus.generator.function.ConverterFileName;
 import com.baomidou.mybatisplus.generator.keywords.MySqlKeyWordsHandler;
 import org.penough.mp.generator.config.*;
 import org.penough.mp.generator.constant.TableConstant;
-import org.penough.mp.generator.engine.MyFreeMarkerEngine;
+import org.penough.mp.generator.util.EnumFieldUtil;
+import org.penough.mp.generator.util.PathUtil;
+
+import java.io.File;
 
 /**
  * 自动生成器处理器器
@@ -60,16 +63,19 @@ public class AutoGeneratorProcessor {
      * @return
      */
     private GlobalConfig generateGlobalConfig(PeGlobalConfig config){
-         GlobalConfig.Builder builder = GeneratorBuilder.globalConfigBuilder()
-                 .openDir(config.getOpenDir())
-                 .author(config.getAuthor())
-                 .outputDir(config.getProjectRootPath())
-                 .dateType(config.getDateType())
-                 .commentDate(config.getCommentDate());
-         fileOverride(builder, config.getFileOverride());
-         kotlin(builder, config.getKotlin());
-         swagger(builder, config.getSwagger());
-         return builder.build();
+        String fileDir = config.getProjectRootPath()
+                + File.separator + config.getServicePrefix() + config.getServiceName()
+                + File.separator + PathUtil.SRC_MAIN_JAVA;
+        GlobalConfig.Builder builder = GeneratorBuilder.globalConfigBuilder()
+                .openDir(config.getOpenDir())
+                .author(config.getAuthor())
+                .outputDir(fileDir)
+                .dateType(config.getDateType())
+                .commentDate(config.getCommentDate());
+        fileOverride(builder, config.getFileOverride());
+        kotlin(builder, config.getKotlin());
+        swagger(builder, config.getSwagger());
+        return builder.build();
     }
     private GlobalConfig.Builder fileOverride(GlobalConfig.Builder builder, Boolean flag){ return flag?builder.fileOverride():builder;}
     private GlobalConfig.Builder kotlin(GlobalConfig.Builder builder, Boolean flag){ return flag?builder.enableKotlin():builder;}
