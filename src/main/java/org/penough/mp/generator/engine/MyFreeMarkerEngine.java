@@ -70,7 +70,7 @@ public class MyFreeMarkerEngine extends FreemarkerTemplateEngine {
                 Map<String, String> packageInfo = (Map)stringObjectMap.get(CommonConstant.PACKAGE);
                 // 获取实体包信息
                 var entityPackage = packageInfo.get(ConstVal.ENTITY);
-                var dtoPkg = entityPackage + StringPool.DOT + tableInfo.getEntityName().toLowerCase() + StringPool.DOT + CommonConstant.DTO;
+                var dtoPkg = entityPackage + StringPool.DOT + CommonConstant.DTO + StringPool.DOT + tableInfo.getEntityName().toLowerCase();
                 var dtoPkgPath = PathUtil.getRootBasePath(globalConfig) + dtoPkg.replace(StringPool.DOT, File.separator);
                 var entityName = stringObjectMap.get(CommonConstant.ENTITY);
                 stringObjectMap.put(CommonConstant.DTO_PKG, dtoPkg);
