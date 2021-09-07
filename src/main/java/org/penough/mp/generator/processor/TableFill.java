@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.generator.IFill;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.penough.mp.generator.test.Obj;
 
 @AllArgsConstructor
 public class TableFill implements IFill {

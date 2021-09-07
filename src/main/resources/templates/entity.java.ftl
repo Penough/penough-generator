@@ -151,8 +151,9 @@ public class ${entity} implements Serializable {
     @TableLogic
     </#if>
     <#assign myPropertyName="${field.propertyName}"/>
-    @Excel(name = "${fieldComment}"<#if myPropertyType!?contains("Local")>, format = DEFAULT_DATE_TIME_FORMAT, width = 20</#if><#if myPropertyType!?contains("Boolean")>, replace = {"是_true", "否_false", "_null"}</#if><#if isEnumType>, replace = {<#list field.customMap.enumInfo.enumFieldsInfo?keys as key>"${field.customMap.enumInfo.enumFieldsInfo[key][0]?replace(intFlag,"")}_${key?upper_case?replace(intFlag,"")}", </#list> "_null"}</#if>)
+    @Excel(name = "${fieldComment}"<#if myPropertyType!?contains("Local")>, format = DEFAULT_DATE_TIME_FORMAT, width = 20</#if><#if myPropertyType!?contains("Boolean")>, replace = {"是_true", "否_false", "_null"}</#if><#if isEnumType>, replace = {<#list field.customMap.enumInfo.enumFieldsInfo?keys as key>"${field.customMap.enumInfo.enumFieldsInfo[key][0]?replace(intFlag,"")}_<#if field.customMap.enumInfo.enumFieldsInfo[key]?size lt 2>${key?upper_case?replace(intFlag,"")}<#else>${field.customMap.enumInfo.enumFieldsInfo[key][1]?replace(intFlag,"")}</#if>", </#list> "_null"}</#if>)
     private ${myPropertyType} ${myPropertyName};
+
     </#if>
 </#list>
 <#------------  END 字段循环遍历  ---------->
