@@ -31,5 +31,30 @@ public class Test {
 }
 ```
 本项目旨在通过简单易懂的配置，即可生成满足基本CRUD的MVC操作类
-
+生成后的文件树结构如下
+```
+├─penough-user
+│  └─src
+│      └─main
+│          └─java
+│              └─org
+│                  └─penough
+│                      └─pblog
+│                          └─user
+│                              ├─controller
+│                              ├─mapper
+│                              ├─model
+│                              │  ├─dto
+│                              │  │  └─user
+│                              │  └─enumeration
+│                              └─service
+│                                  └─impl
+```
+penough-user: penough-默认前缀，user-ServiceName
+org.penough.pblog: 指定的项目父目录
+contorller：提供生成指定服务的类
+mapper：提供生成dao层mapper，并生成mapper.xml
+model：包含数据DTO模型、实体模型、枚举类模型
+service：服务接口类
+impl：接口实现类
 
