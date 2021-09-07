@@ -58,16 +58,11 @@ public class MyFreeMarkerEngine extends FreemarkerTemplateEngine {
             });
             injectCfg(cb, tableInfo);
         });
-        // 不需要使用tableInfo的DTO类采用InjectionConfig类进行配置注入
-//        InjectionConfig injCfg = new InjectionConfig();
-//        injCfg.
-//        cb.setInjectionConfig(injCfg);
 
         return super.batchOutput();
     }
 
     private void injectCfg(ConfigBuilder cb, TableInfo tableInfo) {
-//        InjectionConfig cfg = cb.getInjectionConfig();
         BiConsumer<TableInfo, Map<String, Object>> biConsumer = new BiConsumer<TableInfo, Map<String, Object>>() {
             @Override
             public void accept(TableInfo tableInfo, Map<String, Object> stringObjectMap) {
@@ -75,9 +70,8 @@ public class MyFreeMarkerEngine extends FreemarkerTemplateEngine {
                 Map<String, String> packageInfo = (Map)stringObjectMap.get(CommonConstant.PACKAGE);
                 // 获取实体包信息
                 var entityPackage = packageInfo.get(ConstVal.ENTITY);
-                var dtoPkg = entityPackage + StringPool.DOT + CommonConstant.DTO;
-                var dtoPkgPath = PathUtil.getRootBasePath(globalConfig) + dtoPkg.replace(StringPool.DOT, File.separator)
-                        + File.separator + tableInfo.getEntityName().toUpperCase();
+                var dtoPkg = entityPackage + StringPool.DOT + tableInfo.getEntityName().toLowerCase() + StringPool.DOT + CommonConstant.DTO;
+                var dtoPkgPath = PathUtil.getRootBasePath(globalConfig) + dtoPkg.replace(StringPool.DOT, File.separator);
                 var entityName = stringObjectMap.get(CommonConstant.ENTITY);
                 stringObjectMap.put(CommonConstant.DTO_PKG, dtoPkg);
                 File outputFile = new File(dtoPkgPath + File.separator + entityName + CommonConstant.PAGE_DTO + JAVA_SUFFIX);

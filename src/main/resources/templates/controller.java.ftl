@@ -2,9 +2,9 @@ package ${package.Controller};
 
 <#if superControllerClass??>
 import ${package.Entity}.${entity};
-import ${cfg.SaveDTO}.${entity}SaveDTO;
-import ${cfg.SaveDTO}.${entity}UpdateDTO;
-import ${cfg.SaveDTO}.${entity}PageDTO;
+import ${dtoPkg}.${entity}SaveDTO;
+import ${dtoPkg}.${entity}UpdateDTO;
+import ${dtoPkg}.${entity}PageDTO;
 import ${package.Service}.${table.serviceName};
 import java.util.List;
 import java.util.Map;
@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 <#if superControllerClassPackage??>
 import ${superControllerClassPackage};
 </#if>
-import com.deeya.medical.base.R;
+import org.penough.boot.mvc.controller.request.ApiResult;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.deeya.medical.security.annotation.PreAuth;
+<#-- 这里应该由一个鉴权注解 -->
 <#if restControllerStyle>
 import org.springframework.web.bind.annotation.RestController;
 <#else>
@@ -47,10 +47,9 @@ import org.springframework.stereotype.Controller;
 @Controller
 </#if>
 @RequestMapping("<#if package.ModuleName??>/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle??>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
-<#if swagger2>
+<#if swagger>
 @Api(value = "${entity}", tags = "${tableComment}")
 </#if>
-@PreAuth(replace = "${entity?uncap_first}:")
 <#if kotlin>
     class ${table.controllerName}<#if superControllerClass??> : ${superControllerClass}()</#if>
 <#else>
@@ -67,14 +66,14 @@ public class ${table.controllerName} {
      * @param list
      */
     @Override
-    public R<Boolean> handlerImport(List<Map<String, String>> list){
+    public ApiResult<Boolean> handlerImport(List<Map<String, String>> list){
         List<${entity}> ${entity?uncap_first}List = list.stream().map((map) -> {
             ${entity} ${entity?uncap_first} = ${entity}.builder().build();
             //TODO 请在这里完成转换
             return ${entity?uncap_first};
         }).collect(Collectors.toList());
 
-        return R.success(baseService.saveBatch(${entity?uncap_first}List));
+        return ApiResult.success(baseService.saveBatch(${entity?uncap_first}List));
     }
 </#if>
 }

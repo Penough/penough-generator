@@ -1,8 +1,7 @@
 package org.penough.mp.generator.config;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.generator.IFill;
+import com.baomidou.mybatisplus.generator.config.INameConvert;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -19,16 +18,27 @@ public class PeStrategyConfig {
     /**
      * entity策略配置部分(Table)
      */
+    @Builder.Default
     String superEntity = EntityType.SUPER_ENTITY.getVal();
+    @Builder.Default
     String[] includeTables = {};
+    @Builder.Default
     String tablePrefix = "penough";
+    @Builder.Default
     String versionColumn = TableConstant.VERSION_COLUMN;
+    @Builder.Default
     String versionProperty = TableConstant.VERSION_COLUMN;
+    @Builder.Default
     String logicalDeleteColumn = TableConstant.LOGICAL_DELETE_COLUMN;
+    @Builder.Default
     String logicalDeleteProperty = TableConstant.LOGICAL_DELETE_PROPERTY;
+    @Builder.Default
     NamingStrategy namingStrategy = NamingStrategy.underline_to_camel;
+    @Builder.Default
     NamingStrategy columnNaming = NamingStrategy.underline_to_camel;
+    @Builder.Default
     String[] ignoreColumns = TableConstant.IGNORE_COLUMNS;
+    @Builder.Default
     IFill[] tableFields = {};
 
     /**
