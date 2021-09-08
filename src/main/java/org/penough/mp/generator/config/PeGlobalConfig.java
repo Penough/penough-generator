@@ -28,7 +28,7 @@ public class PeGlobalConfig {
     @Builder.Default
     String commentDate = "yyyy-MM-dd";
     @Builder.Default
-    DateType dateType = DateType.ONLY_DATE;
+    DateType dateType = DateType.TIME_PACK;
     @Builder.Default
     Boolean kotlin = false;
     @Builder.Default

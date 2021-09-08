@@ -73,7 +73,7 @@ public class ${table.controllerName} {
             return ${entity?uncap_first};
         }).collect(Collectors.toList());
 
-        return ApiResult.success(baseService.saveBatch(${entity?uncap_first}List));
+        return ApiResult.SUCCESS(baseService.saveBatch(${entity?uncap_first}List));
     }
 </#if>
 }

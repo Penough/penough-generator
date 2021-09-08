@@ -44,19 +44,19 @@ public class PeStrategyConfig {
     /**
      * controller部分配置
      */
-    String superController = "com.penough.boot.mvc.controller.SuperController";
+    String superController = "org.penough.boot.mvc.controller.SuperController";
     /**
      * mapper部分配置
      */
-    String superMapper = "com.penough.boot.database.mapper.SuperMapper";
+    String superMapper = "org.penough.boot.database.mapper.SuperMapper";
 
     /**
      * service部分配置
      */
-    String superService = "com.penough.boot.mvc.service.SuperService";
+    String superService = "org.penough.boot.mvc.service.SuperService";
 
     /**
      * impl部分配置
      */
-    String superServiceImpl = "com.penough.boot.mvc.service.SuperServiceImpl";
+    String superServiceImpl = "org.penough.boot.mvc.service.SuperServiceImpl";
 }

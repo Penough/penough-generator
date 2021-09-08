@@ -16,6 +16,7 @@ import org.hibernate.validator.constraints.Range;
 import java.time.LocalDateTime;
 <#if entityLombokModel>
 import lombok.*;
+import lombok.experimental.Accessors;
 import static org.penough.boot.utils.DateUtils.DEFAULT_DATE_TIME_FORMAT;
 </#if>
 

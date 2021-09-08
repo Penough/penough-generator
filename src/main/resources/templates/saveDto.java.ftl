@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import lombok.*;
+import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
