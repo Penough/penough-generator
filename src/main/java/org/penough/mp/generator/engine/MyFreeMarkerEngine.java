@@ -51,7 +51,6 @@ public class MyFreeMarkerEngine extends FreemarkerTemplateEngine {
             tableInfo.getFields().forEach(filed -> {
                 try {
                     EnumFieldUtil.generateEnum(tableInfo, filed, globalConfig, strategyConfig, this);
-                    boolean flag = true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

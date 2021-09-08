@@ -29,6 +29,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
+@ExcelTarget("${entity}PageDTO")
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @Builder
@@ -92,6 +93,12 @@ public class ${entity}PageDTO implements Serializable {
         <#if field.propertyType?starts_with("Short")>
     @Range(min = Short.MIN_VALUE, max = Short.MAX_VALUE, message = "${fieldComment}长度不能超过"+Short.MAX_VALUE)
         </#if>
+    </#if>
+    <#if !isEnumType>
+    @Excel(name = "${fieldComment}"<#if myPropertyType!?contains("Local")>, format = DEFAULT_DATE_TIME_FORMAT, width = 20</#if><#if myPropertyType!?contains("Boolean")>, replace = {"是_true", "否_false", "_null"}</#if><#if isEnumType>, replace = {<#list field.customMap.enumInfo.enumFieldsInfo?keys as key>"${field.customMap.enumInfo.enumFieldsInfo[key][0]?replace(intFlag,"")}_<#if field.customMap.enumInfo.enumFieldsInfo[key]?size lt 2>${key?upper_case?replace(intFlag,"")}<#else>${field.customMap.enumInfo.enumFieldsInfo[key][1]?replace(intFlag,"")}</#if>", </#list> "_null"}</#if>)
+    <#else>
+    <#assign myPropertyType="${field.customMap.enumInfo.enumClassName}"/>
+    @ExcelEntity
     </#if>
     <#assign myPropertyName="${field.propertyName}"/>
     private ${myPropertyType} ${myPropertyName};

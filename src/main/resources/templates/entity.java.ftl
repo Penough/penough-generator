@@ -45,6 +45,7 @@ import static com.baomidou.mybatisplus.annotation.SqlCondition.LIKE;
 <#else>
 @EqualsAndHashCode(callSuper = false)
 </#if>
+@ExcelTarget("${entity}")
 @Accessors(chain = true)
 </#if>
 <#if table.convert>
@@ -152,7 +153,12 @@ public class ${entity} implements Serializable {
     @TableLogic
     </#if>
     <#assign myPropertyName="${field.propertyName}"/>
+    <#if !isEnumType>
     @Excel(name = "${fieldComment}"<#if myPropertyType!?contains("Local")>, format = DEFAULT_DATE_TIME_FORMAT, width = 20</#if><#if myPropertyType!?contains("Boolean")>, replace = {"是_true", "否_false", "_null"}</#if><#if isEnumType>, replace = {<#list field.customMap.enumInfo.enumFieldsInfo?keys as key>"${field.customMap.enumInfo.enumFieldsInfo[key][0]?replace(intFlag,"")}_<#if field.customMap.enumInfo.enumFieldsInfo[key]?size lt 2>${key?upper_case?replace(intFlag,"")}<#else>${field.customMap.enumInfo.enumFieldsInfo[key][1]?replace(intFlag,"")}</#if>", </#list> "_null"}</#if>)
+    <#else>
+    <#assign myPropertyType="${field.customMap.enumInfo.enumClassName}"/>
+    @ExcelEntity
+    </#if>
     private ${myPropertyType} ${myPropertyName};
 
     </#if>
@@ -187,7 +193,7 @@ public class ${entity} implements Serializable {
 <#if superEntityClass??>
     @Builder
     public ${entity}(<#list table.commonFields as cf><#if cf.propertyName!="tenantCode">${cf.propertyType} ${cf.propertyName}, </#if></#list>
-                    <#list table.fields as field><#assign myPropertyType="${field.propertyType}"/><#if field_has_next>${((field_index + 1) % 6 ==0)?string('\r\n                    ', '')}${myPropertyType} ${field.propertyName}, <#else>${myPropertyType} ${field.propertyName}</#if></#list>) {
+                    <#list table.fields as field><#assign isEnumType=field.customMap.isEnum!false/><#assign myPropertyType="${field.propertyType}"/><#if field_has_next>${((field_index + 1) % 6 ==0)?string('\r\n                    ', '')}<#if !isEnumType>${myPropertyType}<#else>${field.customMap.enumInfo.enumClassName}</#if> ${field.propertyName}, <#else><#if !isEnumType>${myPropertyType}<#else>${field.customMap.enumInfo.enumClassName}</#if> ${field.propertyName}</#if></#list>) {
     <#list table.commonFields as cf>
         <#if cf.propertyName!="tenantCode">
         this.${cf.propertyName} = ${cf.propertyName};
