@@ -51,11 +51,11 @@ public enum ${enumInfo.enumClassName} implements BaseEnum {
     <#elseif atr_index == 0 && enumInfo.enumFieldsInfo[key]?size gte 2>
     @ExcelIgnore
     @ApiModelProperty(value = "编码")
-    private <#if atr?index_of(intFlag) gt -1>int<#else>String</#if> code;
+    private <#if atr?index_of(intFlag) gt -1>Integer<#else>String</#if> code;
     <#elseif atr_index gt 0 && enumInfo.enumFieldsInfo[key]?size gte 2>
     @ExcelIgnore
     @ApiModelProperty(value = "属性${atr_index}")
-    private <#if atr?index_of(intFlag) gt -1>int<#else>String</#if> atr${atr_index};
+    private <#if atr?index_of(intFlag) gt -1>Integer<#else>String</#if> atr${atr_index};
     </#if>
 </#list>
 <#break>
@@ -95,11 +95,11 @@ public enum ${enumInfo.enumClassName} implements BaseEnum {
     <#else>
     <#list enumInfo.enumFieldsInfo?keys as key>
     <#if enumInfo.enumFieldsInfo[key][0]?index_of(intFlag) gt -1>
-    public boolean eq(int code) {
-        return this.code == code;
+    public boolean eq(Integer code) {
+        return this.code.equals(code);
     }
 
-    public static ${enumInfo.enumClassName} match(int val, ${enumInfo.enumClassName} def) {
+    public static ${enumInfo.enumClassName} match(Integer val, ${enumInfo.enumClassName} def) {
         for (${enumInfo.enumClassName} enm : ${enumInfo.enumClassName}.values()) {
             if (enm.eq(val)) {
                 return enm;
@@ -108,13 +108,13 @@ public enum ${enumInfo.enumClassName} implements BaseEnum {
         return def;
     }
 
-    public static ${enumInfo.enumClassName} get(int val) {
+    public static ${enumInfo.enumClassName} get(Integer val) {
         return match(val, null);
     }
 
     @Override
     @ApiModelProperty(value = "编码", allowableValues = "<#list enumInfo.enumFieldsInfo?keys as k>${enumInfo.enumFieldsInfo[k][0]?replace(intFlag,"")}<#if k_has_next>,</#if></#list>", example = "${enumInfo.enumFieldsInfo[key][0]?replace(intFlag,"")}")
-    public int getCode() {
+    public Integer getCode() {
         return this.code;
     }
     <#else>

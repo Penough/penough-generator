@@ -2,6 +2,7 @@ package ${package.Entity};
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import cn.afterturn.easypoi.excel.annotation.ExcelEntity;
+import cn.afterturn.easypoi.excel.annotation.ExcelTarget;
 <#list table.importPackages as pkg>
 import ${pkg};
 </#list>
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 <#if entityLombokModel>
 import lombok.*;
 import lombok.experimental.Accessors;
-import static org.penough.boot.utils.DateUtils.DEFAULT_DATE_TIME_FORMAT;
+import static org.penough.boot.common.utils.DateUtils.DEFAULT_DATE_TIME_FORMAT;
 </#if>
 
 import static com.baomidou.mybatisplus.annotation.SqlCondition.LIKE;
