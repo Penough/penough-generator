@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
+import cn.afterturn.easypoi.excel.annotation.ExcelIgnore;
+import cn.afterturn.easypoi.excel.annotation.Excel;
 
 <#assign tableComment="${table.comment!}"/>
 <#assign intFlag="$D$"/>
@@ -43,12 +45,15 @@ public enum ${enumInfo.enumClassName} implements BaseEnum {
 <#list enumInfo.enumFieldsInfo?keys as key>
 <#list enumInfo.enumFieldsInfo[key] as atr>
     <#if atr_index == 0 && enumInfo.enumFieldsInfo[key]?size lt 2 || atr_index == 1>
+    @Excel(name = "${enumInfo.comment}")
     @ApiModelProperty(value = "描述")
     private String desp;
     <#elseif atr_index == 0 && enumInfo.enumFieldsInfo[key]?size gte 2>
+    @ExcelIgnore
     @ApiModelProperty(value = "编码")
     private <#if atr?index_of(intFlag) gt -1>int<#else>String</#if> code;
     <#elseif atr_index gt 0 && enumInfo.enumFieldsInfo[key]?size gte 2>
+    @ExcelIgnore
     @ApiModelProperty(value = "属性${atr_index}")
     private <#if atr?index_of(intFlag) gt -1>int<#else>String</#if> atr${atr_index};
     </#if>

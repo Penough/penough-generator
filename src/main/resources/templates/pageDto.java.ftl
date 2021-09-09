@@ -1,5 +1,8 @@
 package ${dtoPkg};
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.afterturn.easypoi.excel.annotation.ExcelTarget;
+import cn.afterturn.easypoi.excel.annotation.ExcelEntity;
 import java.time.LocalDateTime;
 <#list table.importPackages as pkg>
 import ${pkg};
