@@ -11,7 +11,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
-import com.deeya.medical.base.entity.SuperEntity;
 import lombok.*;
 import lombok.experimental.Accessors;
 import java.io.Serializable;
