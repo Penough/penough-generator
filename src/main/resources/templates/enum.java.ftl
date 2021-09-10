@@ -61,6 +61,23 @@ public enum ${enumInfo.enumClassName} implements BaseEnum {
 <#break>
 </#list>
 
+    public String getDesp(){
+        return this.desp;
+    }
+
+    public static ${enumInfo.enumClassName} matchByDesp(String val, ${enumInfo.enumClassName} def) {
+        for (${enumInfo.enumClassName} enm : ${enumInfo.enumClassName}.values()) {
+            if (enm.getDesp().equalsIgnoreCase(val)) {
+                return enm;
+            }
+        }
+        return def;
+    }
+
+    public static ${enumInfo.enumClassName} getByDesp(String val) {
+        return matchByDesp(val, null);
+    }
+
     public boolean eq(${enumInfo.enumClassName} val) {
         if (val == null) {
             return false;
