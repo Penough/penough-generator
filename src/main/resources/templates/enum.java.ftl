@@ -32,7 +32,7 @@ import cn.afterturn.easypoi.excel.annotation.Excel;
 @NoArgsConstructor
 @ApiModel(value = "${enumInfo.enumClassName}", description = "${enumInfo.comment}-枚举")
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum ${enumInfo.enumClassName} implements BaseEnum {
+public enum ${enumInfo.enumClassName} implements BaseEnum<<#list enumInfo.enumFieldsInfo?keys as key><#if enumInfo.enumFieldsInfo[key]?size lte 1>String<#elseif enumInfo.enumFieldsInfo[key][0]?index_of(intFlag) gt -1>Integer<#else>String</#if><#break></#list>> {
 
     <#list enumInfo.enumFieldsInfo?keys as key>
     /**
